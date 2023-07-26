@@ -45,10 +45,6 @@ export class EventbridgeToSqs extends Construct {
       throw new Error('You cannot provide both an existing event bus and event bus props');
     }
 
-    if (!(existingEventBusInterface || eventBusProps)) {
-      throw new Error('You must provide either an existing event bus or event bus props');
-    }
-
     const eventBus = existingEventBusInterface || new EventBus(this, 'Bus', eventBusProps);
     // Event bus setup
     const normalizedId = paramCase(id);
@@ -56,9 +52,6 @@ export class EventbridgeToSqs extends Construct {
 
     if (existingQueueObj && queueProps) {
       throw new Error('You cannot provide both an existing queue and queue props');
-    }
-    if (!(existingQueueObj || queueProps)) {
-      throw new Error('You must provide either an existing queue or queue props');
     }
 
     let queue: Queue = existingQueueObj || new Queue(this, 'Queue', {
