@@ -8,6 +8,91 @@ Because it doesn't support message group id.
 
 So, that's why.
 
+## Documentation
+
+[API Reference](./API.md)
+
+## Usage
+
+### Install
+
+```bash
+npm install cdk-eventbridge-to-sqs
+```
+
+### Import
+
+```typescript
+import { EventbridgeToSqs } from "cdk-eventbridge-to-sqs";
+```
+
+### Examples
+
+#### Create an eventbus and a queue, and connect them
+
+```typescript
+const { queue, eventBus } = new EventbridgeToSqs(this, "EventbridgeToSqs");
+```
+
+#### Create an eventbus and a queue with custom names, and connect them
+
+```typescript
+const { queue, eventBus } = new EventbridgeToSqs(this, "EventbridgeToSqs", {
+  eventBusProps: {
+    eventBusName: "MyEventBus",
+  },
+  queueProps: {
+    queueName: "MyQueue",
+  },
+});
+```
+
+#### Create an eventbus, a queue and a dead letter queue with custom names, and connect them
+
+```typescript
+const { queue, eventBus } = new EventbridgeToSqs(this, "EventbridgeToSqs", {
+  eventBusProps: {
+    eventBusName: "MyEventBus",
+  },
+  queueProps: {
+    fifo: true,
+  },
+  deadLetterQueueProps: {
+    fifo: true,
+  },
+  deployDeadLetterQueue: true,
+  messageGroupId: "MyMessageGroupId",
+});
+```
+
+#### Connect an existing eventbus and queue
+
+```typescript
+declare const queue: Queue;
+declare const eventBus: EventBus;
+
+new EventbridgeToSqs(this, "EventbridgeToSqs", {
+  existingEventBusInterface: eventBus,
+  existingQueueObj: queue,
+});
+```
+
+#### Custom event rule filter pattern
+
+```typescript
+declare const queue: Queue;
+declare const eventBus: EventBus;
+
+new EventbridgeToSqs(this, "EventbridgeToSqs", {
+  existingEventBusInterface: eventBus,
+  existingQueueObj: queue,
+  eventRuleFilterPattern: {
+    detailType: ["MyDetailType"],
+    source: ["MySource"],
+  },
+});
+```
+
 # API Reference <a name="API Reference" id="api-reference"></a>
 
 ## Constructs <a name="Constructs" id="Constructs"></a>
@@ -19,7 +104,7 @@ So, that's why.
 ```typescript
 import { EventbridgeToSqs } from 'cdk-eventbridge-to-sqs'
 
-new EventbridgeToSqs(scope: Construct, id: string, props: EventbridgeToSqsProps)
+new EventbridgeToSqs(scope: Construct, id: string, props?: EventbridgeToSqsProps)
 ```
 
 | **Name** | **Type** | **Description** |
@@ -42,7 +127,7 @@ new EventbridgeToSqs(scope: Construct, id: string, props: EventbridgeToSqsProps)
 
 ---
 
-##### `props`<sup>Required</sup> <a name="props" id="cdk-eventbridge-to-sqs.EventbridgeToSqs.Initializer.parameter.props"></a>
+##### `props`<sup>Optional</sup> <a name="props" id="cdk-eventbridge-to-sqs.EventbridgeToSqs.Initializer.parameter.props"></a>
 
 - *Type:* <a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps">EventbridgeToSqsProps</a>
 
@@ -173,6 +258,8 @@ public readonly deadLetterQueue: DeadLetterQueue;
 
 ### EventbridgeToSqsProps <a name="EventbridgeToSqsProps" id="cdk-eventbridge-to-sqs.EventbridgeToSqsProps"></a>
 
+The properties for the EventbridgeToSqs class.
+
 #### Initializer <a name="Initializer" id="cdk-eventbridge-to-sqs.EventbridgeToSqsProps.Initializer"></a>
 
 ```typescript
@@ -185,17 +272,17 @@ const eventbridgeToSqsProps: EventbridgeToSqsProps = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.deadLetterQueueProps">deadLetterQueueProps</a></code> | <code>aws-cdk-lib.aws_sqs.QueueProps</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.deployDeadLetterQueue">deployDeadLetterQueue</a></code> | <code>boolean</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.enableQueuePurging">enableQueuePurging</a></code> | <code>boolean</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.eventBusProps">eventBusProps</a></code> | <code>aws-cdk-lib.aws_events.EventBusProps</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.eventRuleFilterPattern">eventRuleFilterPattern</a></code> | <code>aws-cdk-lib.aws_events.EventPattern</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.eventRuleProps">eventRuleProps</a></code> | <code>aws-cdk-lib.aws_events.RuleProps</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.existingEventBusInterface">existingEventBusInterface</a></code> | <code>aws-cdk-lib.aws_events.IEventBus</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.existingQueueObj">existingQueueObj</a></code> | <code>aws-cdk-lib.aws_sqs.Queue</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.maxReceiveCount">maxReceiveCount</a></code> | <code>number</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.messageGroupId">messageGroupId</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.queueProps">queueProps</a></code> | <code>aws-cdk-lib.aws_sqs.QueueProps</code> | *No description.* |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.deadLetterQueueProps">deadLetterQueueProps</a></code> | <code>aws-cdk-lib.aws_sqs.QueueProps</code> | Properties for the dead letter queue, if deployDeadLetterQueue is true. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.deployDeadLetterQueue">deployDeadLetterQueue</a></code> | <code>boolean</code> | Whether to deploy a dead letter queue for the main queue. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.enableQueuePurging">enableQueuePurging</a></code> | <code>boolean</code> | Whether to enable queue purging. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.eventBusProps">eventBusProps</a></code> | <code>aws-cdk-lib.aws_events.EventBusProps</code> | Properties for the new event bus that will be created. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.eventRuleFilterPattern">eventRuleFilterPattern</a></code> | <code>aws-cdk-lib.aws_events.EventPattern</code> | Event pattern to use for the event rule Defaults to an event pattern that matches all events in the same region as the event bus. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.eventRuleProps">eventRuleProps</a></code> | <code>aws-cdk-lib.aws_events.RuleProps</code> | Properties for the new event rule that will be created. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.existingEventBusInterface">existingEventBusInterface</a></code> | <code>aws-cdk-lib.aws_events.EventBus</code> | An existing event bus to bind the rule to. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.existingQueueObj">existingQueueObj</a></code> | <code>aws-cdk-lib.aws_sqs.Queue</code> | Existing queue object to bind the event source to. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.maxReceiveCount">maxReceiveCount</a></code> | <code>number</code> | Max receive count for the dead letter queue. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.messageGroupId">messageGroupId</a></code> | <code>string</code> | The message group id to use for fifo queues. |
+| <code><a href="#cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.queueProps">queueProps</a></code> | <code>aws-cdk-lib.aws_sqs.QueueProps</code> | Properties for the new queue that will be created, if no existing queue is provided. |
 
 ---
 
@@ -206,6 +293,9 @@ public readonly deadLetterQueueProps: QueueProps;
 ```
 
 - *Type:* aws-cdk-lib.aws_sqs.QueueProps
+- *Default:* None
+
+Properties for the dead letter queue, if deployDeadLetterQueue is true.
 
 ---
 
@@ -216,6 +306,9 @@ public readonly deployDeadLetterQueue: boolean;
 ```
 
 - *Type:* boolean
+- *Default:* false
+
+Whether to deploy a dead letter queue for the main queue.
 
 ---
 
@@ -226,6 +319,11 @@ public readonly enableQueuePurging: boolean;
 ```
 
 - *Type:* boolean
+- *Default:* false
+
+Whether to enable queue purging.
+
+If true, the queue will be purged before deployment
 
 ---
 
@@ -236,6 +334,9 @@ public readonly eventBusProps: EventBusProps;
 ```
 
 - *Type:* aws-cdk-lib.aws_events.EventBusProps
+- *Default:* None
+
+Properties for the new event bus that will be created.
 
 ---
 
@@ -246,6 +347,9 @@ public readonly eventRuleFilterPattern: EventPattern;
 ```
 
 - *Type:* aws-cdk-lib.aws_events.EventPattern
+- *Default:* None
+
+Event pattern to use for the event rule Defaults to an event pattern that matches all events in the same region as the event bus.
 
 ---
 
@@ -256,16 +360,22 @@ public readonly eventRuleProps: RuleProps;
 ```
 
 - *Type:* aws-cdk-lib.aws_events.RuleProps
+- *Default:* None
+
+Properties for the new event rule that will be created.
 
 ---
 
 ##### `existingEventBusInterface`<sup>Optional</sup> <a name="existingEventBusInterface" id="cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.existingEventBusInterface"></a>
 
 ```typescript
-public readonly existingEventBusInterface: IEventBus;
+public readonly existingEventBusInterface: EventBus;
 ```
 
-- *Type:* aws-cdk-lib.aws_events.IEventBus
+- *Type:* aws-cdk-lib.aws_events.EventBus
+- *Default:* A new event bus will be created
+
+An existing event bus to bind the rule to.
 
 ---
 
@@ -276,6 +386,13 @@ public readonly existingQueueObj: Queue;
 ```
 
 - *Type:* aws-cdk-lib.aws_sqs.Queue
+- *Default:* None
+
+Existing queue object to bind the event source to.
+
+If not provided, a new queue will be created.
+If an existing queue is provided, the queue will not be modified unless enableQueuePurging is set to true
+or deployDeadLetterQueue is set to true
 
 ---
 
@@ -286,6 +403,9 @@ public readonly maxReceiveCount: number;
 ```
 
 - *Type:* number
+- *Default:* 3
+
+Max receive count for the dead letter queue.
 
 ---
 
@@ -297,6 +417,8 @@ public readonly messageGroupId: string;
 
 - *Type:* string
 
+The message group id to use for fifo queues.
+
 ---
 
 ##### `queueProps`<sup>Optional</sup> <a name="queueProps" id="cdk-eventbridge-to-sqs.EventbridgeToSqsProps.property.queueProps"></a>
@@ -306,6 +428,9 @@ public readonly queueProps: QueueProps;
 ```
 
 - *Type:* aws-cdk-lib.aws_sqs.QueueProps
+- *Default:* None
+
+Properties for the new queue that will be created, if no existing queue is provided.
 
 ---
 

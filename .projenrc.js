@@ -1,5 +1,6 @@
 const { awscdk } = require('projen');
 const project = new awscdk.AwsCdkConstructLibrary({
+  jsiiVersion: '5.1.8',
   author: 'JP Wesselink',
   authorAddress: 'jpwesselink@gmail.com',
   cdkVersion: '2.88.0',
